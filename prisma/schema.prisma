@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  PEMILIK
+  PENGELOLA_PRODUKSI
+}
+
+enum StatusProduksi {
+  MENUNGGU
+  DALAM_PRODUKSI
+  SELESAI
+}
+
+enum Difficulty {
+  MUDAH
+  SEDANG
+  SULIT
+}
+
+model User {
+  id          Int    @id @default(autoincrement())
+  id_user     String @unique @db.VarChar(10)
+  nama        String @db.VarChar(20)
+  username    String @unique @db.VarChar(20)
+  password    String @db.VarChar(100)
+  role        Role
+}
+
+model Pelanggan {
+  id           Int      @id @default(autoincrement())
+  id_pelanggan String   @unique @db.VarChar(10)
+  nama         String   @db.VarChar(20)
+  alamat       String   @db.VarChar(100)
+  no_hp        String   @db.VarChar(15)
+  pesanan      Pesanan[]
+}
+
+model Pesanan {
+  id               Int            @id @default(autoincrement())
+  id_pesanan       String         @unique @db.VarChar(10)
+  pelanggan        Pelanggan      @relation(fields: [pelangganId], references: [id])
+  pelangganId      Int
+  nama_produk      String         @db.VarChar(30)
+  tanggal_masuk    DateTime
+  deadline         DateTime
+  jumlah           Int
+  tingkat_kesulitan Difficulty
+  status           StatusProduksi  @default(MENUNGGU)
+  prioritas        Prioritas?
+  produksi         Produksi?
+}
+
+model Prioritas {
+  id               Int      @id @default(autoincrement())
+  id_prioritas     String   @unique @db.VarChar(10)
+  pesanan          Pesanan  @relation(fields: [pesananId], references: [id])
+  pesananId        Int      @unique
+  urutan_prioritas Int
+  tanggal_penjadwalan DateTime
+}
+
+model Produksi {
+  id              Int      @id @default(autoincrement())
+  id_produksi     String   @unique @db.VarChar(10)
+  pesanan         Pesanan  @relation(fields: [pesananId], references: [id])
+  pesananId       Int      @unique
+  status_produksi StatusProduksi @default(MENUNGGU)
+  tanggal_mulai   DateTime?
+  tanggal_selesai DateTime?
+}

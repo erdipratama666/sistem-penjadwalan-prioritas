@@ -1,0 +1,10 @@
+{
+  "description": "Streamline production management with an intuitive login interface for business owners of custom plush toy manufacturing, enhancing efficiency and accessibility.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
